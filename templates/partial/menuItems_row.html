@@ -1,0 +1,27 @@
+{% for item in menuItems %}
+<tr>
+    <td>{{ item.restaurant.name }}</td>
+    <td>{{ item.name }}</td>
+    <td>{{ item.description }}</td>
+    <td>{{ item.price }}</td>
+
+    <td>
+        {% if item.imageURL %}
+            <img src="{{ item.imageURL.url }}" alt="{{ item.name }}" width="60" height="60" style="object-fit: cover;">
+        {% else %}
+            No Image
+        {% endif %}
+    </td>
+    <td><button class="btn btn-primary edit-menuItem-btn"
+                data-id="{{ item.id }}"
+                data-name="{{ item.name }}"
+                data-description="{{ item.description }}"
+                data-price="{{ item.price }}"
+                data-restaurant="{{ item.restaurant.id }}"> Edit</button></td>
+    <td><button class="btn btn-danger delete-menuItem-btn" data-id="{{ item.id }}"> Delete </button></td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center">No Menu Items found</td>
+</tr>
+{% endfor %}

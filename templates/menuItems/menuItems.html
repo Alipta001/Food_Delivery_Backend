@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Menu {% endblock title %}
+{% block body %}
+
+<div class="container">
+    <h2 class="text-center" id="heading">Add a menu item</h2>
+
+    <form method="post" id="subjectForm" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <select id="restaurant_id" name="restaurant_id" class="form-control">
+                <option value="">Select Restaurant</option>
+                {% for restaurant in restaurants %}
+                    <option value="{{ restaurant.id }}">{{ restaurant.name }}</option>
+                {% endfor %}
+            </select>
+        </div><br>
+
+        <div class="form-group">
+            <input type="hidden" id="menuItems_id" name="menuItems_id">
+
+            <label for="menuItems_name">Item Name</label>
+            <input type="text" class="form-control" id="menuItems_name" name="menuItems_name" required>
+
+            <label for="menuItems_desc">Item Description</label>
+            <input type="text" class="form-control" id="menuItems_desc" name="menuItems_desc" required>
+
+            <label for="menuItems_price">Item Price</label>
+            <input type="number" class="form-control" id="menuItems_price" name="menuItems_price" required>
+
+            <label for="menuItems_img">Item Image</label>
+            <input type="file" class="form-control" id="menuItems_img" name="menuItems_img" accept="image/*" required>
+        </div><br>
+
+        <button id="menuItem_register_btn" class="btn btn-success">Save</button>
+    </form>
+
+    <div id="acknowledge"></div>
+
+    <h2 class="text text-center">List of Items</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>Restaurant Name</td>
+                <td>Item Name</td>
+                <td>Item Description</td>
+                <td>Item Price</td>
+                <td>Item Image</td>
+                <td>Edit</td>
+                <td>Delete</td>
+            </tr>
+        </thead>
+
+        <tbody id="menuItems_List">
+            {% include "partial/menuItems_row.html" %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock body %}

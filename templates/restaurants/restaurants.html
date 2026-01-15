@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<form method="post" enctype="multipart/form-data" id="restaurant_form">
+  {% csrf_token %}
+  <div class="mb-3">
+    <input type="hidden" name="restaurant_id" id="restaurant_id">
+    <label for="restaurant_name" class="form-label">Restaurant Name</label>
+    <input type="text" class="form-control" id="restaurant_name" name="restaurant_name"
+      placeholder="Provide a Restaurant Name">
+    <div id="name_error" class="form-text"></div>
+  </div>
+
+  <div class="mb-3">
+    <label for="restaurant_address" class="form-label">Address</label>
+    <input type="text" class="form-control" id="restaurant_address" name="restaurant_address"
+      placeholder="Provide an Address">
+  </div>
+
+  <div class="mb-3">
+    <label for="cuisine_type" class="form-label">Cuisine Type</label>
+    <input type="text" class="form-control" id="cuisine_type" name="cuisine_type" placeholder="Cuisine Type">
+  </div>
+
+  <div class="mb-3">
+    <label for="restaurant_rating" class="form-label">Rating</label>
+    <input type="number" class="form-control" id="restaurant_rating" name="restaurant_rating" placeholder="Rating"
+      step="0.1">
+  </div>
+
+  <div class="mb-3">
+    <label for="restaurant_image" class="form-label">Restaurant Image</label>
+    <input type="file" class="form-control" id="restaurant_image" name="image">
+  </div>
+
+  <button type="submit" class="btn btn-success" id="register_btn">Add</button>
+</form>
+
+<div class="text-center" id="acknowledge"></div>
+
+<hr>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Sl.No</th>
+      <th>Restaurant Name</th>
+      <th>Address</th>
+      <th>Cuisine Type</th>
+      <th>Image</th>
+      <th>Rating</th>
+      <th>Created At</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+
+  <tbody id="restaurant_list">
+    {% include 'partial/restaurants_rows.html' %}
+  </tbody>
+</table>
+
+{% endblock body %}

@@ -1,0 +1,31 @@
+{% for restaurant in restaurants %}
+<tr>
+    <td>{{ restaurant.id }}</td>
+    <td>{{ restaurant.name }}</td>
+    <td>{{ restaurant.address }}</td>
+    <td>{{ restaurant.cuisine_type }}</td>
+
+    <td>
+        {% if restaurant.image %}
+        <img src="{{ restaurant.image.url }}" alt="Restaurant Image" style="width: 100px; height: auto;">
+        {% else %}
+        <span>No Image</span>
+        {% endif %}
+    </td>
+
+    <td>{{ restaurant.rating }}</td>
+    <td>{{ restaurant.created_at }}</td>
+
+    <td>
+        <button class="btn btn-primary btn-sm edit-btn" data-id="{{ restaurant.id }}" data-name="{{ restaurant.name }}"
+            data-address="{{ restaurant.address }}" data-cuisine_type="{{ restaurant.cuisine_type }}"
+            data-rating="{{ restaurant.rating }}">Edit</button>
+    </td>
+
+    <td>
+        <button class="btn btn-danger btn-sm edit-delete" data-id="{{ restaurant.id }}">
+            Delete
+        </button>
+    </td>
+</tr>
+{% endfor %}
