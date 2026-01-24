@@ -3,9 +3,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from .serializers import RestaurantSerializer
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import QuerySet
-from .models import Restaurants
+from .models import Restaurants, Offer
 # Create your views here.
 @api_view(['POST'])
 def create_api(request: Request) -> Response:
@@ -144,3 +144,37 @@ def search_restaurents(request: Request) -> Response:
 
     serializer = RestaurantSerializer(restaurants, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def create_or_update_offer(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurants, pk=restaurant_id)
+
+    discount_percent = request.data.get("discount_percent")
+    max_discount = request.data.get("max_discount")
+
+    if not discount_percent:
+        return Response({"error": "discount_percent required"}, status=400)
+
+    offer, created = Offer.objects.update_or_create(
+        restaurant=restaurant,
+        defaults={
+            "discount_percent": discount_percent,
+            "max_discount": max_discount,
+            "is_active": True
+        }
+    )
+
+    return Response(
+        {"message": "Offer applied successfully"},
+        status=status.HTTP_200_OK
+    )
+    
+@api_view(["POST"])
+def disable_offer(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurants, pk=restaurant_id)
+
+    if hasattr(restaurant, "offer"):
+        restaurant.offer.is_active = False
+        restaurant.offer.save()
+
+    return Response({"message": "Offer disabled"}, status=200)

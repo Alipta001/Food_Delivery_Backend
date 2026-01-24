@@ -44,7 +44,7 @@ def create_menuItem(request: Request) -> Response:
 @api_view(["GET"])
 def list_menuItems(request: Request) -> Response:
 
-    items = MenuItem.objects.select_related("restaurant")
+    items = MenuItem.objects.select_related("restaurant","restaurant__offer")
     serializer = MenuItemSerializer(items, many=True)
 
     return Response(serializer.data, status=200)

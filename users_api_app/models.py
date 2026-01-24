@@ -25,3 +25,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+class UserToken(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tokens')
+    token = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expiry_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"Token for {self.user.email} expiring at {self.expiry_at}"

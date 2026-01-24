@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpRequest
 from users_api_app.models import User
+from django.contrib.auth import authenticate, login, logout
+from users_temp_app.authentication import create_access_token, create_refresh_token
 
 # Create your views here.
 def register_view(request: HttpRequest) -> HttpResponse:
@@ -65,3 +67,29 @@ def register_view(request: HttpRequest) -> HttpResponse:
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+def login_view(request: HttpRequest) -> HttpResponse:
+    if request.method == 'GET':
+        return render(request, 'users/login.html')
+    elif request.method == 'POST':
+        try:
+            email: str = request.POST.get('email', '').strip()
+            password: str = request.POST.get('password', '').strip()
+            
+            user: User = authenticate(request, username=email, password=password)
+            
+            if user is None:
+                return JsonResponse({'status':'error',
+                                     'message': 'Invalid email or password'}, status=400)
+            if not user.is_active:
+                return JsonResponse({'status':'error',
+                                     'message': 'Your email is not verified. Please check your inbox and activate your account.'}, status=400)
+            
+            login(request, user)
+            
+            access_token = create_access_token(user)
+            refresh_token = create_refresh_token(user)
+            
+        except Exception as e:
+            print("Error during login:", str(e))
+            return JsonResponse({'status':'error', 'message': str(e)}, status=400)

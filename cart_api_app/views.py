@@ -102,33 +102,46 @@ def view_cart(request, user_id):
 @api_view(['GET'])
 def calculate_cart_total(request, user_id):
     try:
-        user: User = User.objects.get(id=user_id)
+        user = User.objects.get(id=user_id)
     except User.DoesNotExist:
-        return Response(
-            {"error": "User not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
-        
+        return Response({"error": "User not found"}, status=404)
+
     try:
-        cart: Cart = Cart.objects.get(user=user)
+        cart = Cart.objects.get(user=user)
     except Cart.DoesNotExist:
-        return Response(
-            {"error": "Cart not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
-        
+        return Response({"error": "Cart not found"}, status=404)
+
     total_amount = 0
+    total_savings = 0
     items_data = []
 
-    for item in cart.cart_items.all():
-        item_total = item.menu_item.price * item.quantity
+    for item in cart.cart_items.select_related("menu_item__restaurant"):
+        menu_item = item.menu_item
+        quantity = item.quantity
+
+        original_price = menu_item.price
+        discounted_price = original_price
+
+        restaurant = menu_item.restaurant
+        if hasattr(restaurant, "offer") and restaurant.offer.is_active:
+            offer = restaurant.offer
+            discount = (offer.discount_percent / 100) * original_price
+
+            if offer.max_discount:
+                discount = min(discount, offer.max_discount)
+
+            discounted_price = round(original_price - discount, 2)
+
+        item_total = discounted_price * quantity
         total_amount += item_total
+        total_savings += (original_price - discounted_price) * quantity
 
         items_data.append({
-            "menu_item_id": item.menu_item.id,
-            "menu_item_name": item.menu_item.name,
-            "price": item.menu_item.price,
-            "quantity": item.quantity,
+            "menu_item_id": menu_item.id,
+            "menu_item_name": menu_item.name,
+            "original_price": original_price,
+            "discounted_price": discounted_price,
+            "quantity": quantity,
             "item_total": item_total
         })
 
@@ -137,10 +150,12 @@ def calculate_cart_total(request, user_id):
             "user_id": user.id,
             "cart_id": cart.id,
             "items": items_data,
-            "total_amount": total_amount
+            "total_amount": round(total_amount, 2),
+            "total_savings": round(total_savings, 2)
         },
-        status=status.HTTP_200_OK
+        status=200
     )
+
 
 @api_view(['POST'])
 def remove_item_from_cart(request):
