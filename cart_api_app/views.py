@@ -156,7 +156,6 @@ def calculate_cart_total(request, user_id):
         status=200
     )
 
-
 @api_view(['POST'])
 def remove_item_from_cart(request):
     user_id = request.data.get('user_id')
