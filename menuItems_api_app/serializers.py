@@ -1,7 +1,14 @@
 from rest_framework import serializers
-from menuItems_api_app.models import MenuItem
+from menuItems_api_app.models import MenuItem, MenuItemImage
+
+class MenuItemImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItemImage
+        fields = ["id", "image"]
+
 
 class MenuItemSerializer(serializers.ModelSerializer):
+    images = MenuItemImageSerializer(many=True, read_only=True)
     discounted_price = serializers.SerializerMethodField()
     offer_text = serializers.SerializerMethodField()
 
@@ -25,8 +32,6 @@ class MenuItemSerializer(serializers.ModelSerializer):
 
     def get_offer_text(self, obj):
         restaurant = obj.restaurant
-
         if hasattr(restaurant, "offer") and restaurant.offer.is_active:
             return f"{restaurant.offer.discount_percent}% OFF"
-
         return None

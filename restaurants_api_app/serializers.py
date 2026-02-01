@@ -1,7 +1,15 @@
 from rest_framework import serializers
-from .models import Restaurants
+from .models import Restaurants, RestaurantImage
+
+
+class RestaurantImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestaurantImage
+        fields = ["id", "image"]
+
 
 class RestaurantSerializer(serializers.ModelSerializer):
+    images = RestaurantImageSerializer(many=True, read_only=True)
     offer = serializers.SerializerMethodField()
 
     class Meta:
@@ -13,6 +21,6 @@ class RestaurantSerializer(serializers.ModelSerializer):
             return {
                 "id": obj.offer.id,
                 "discount_percent": obj.offer.discount_percent,
-                "max_discount": obj.offer.max_discount
+                "max_discount": obj.offer.max_discount,
             }
         return None
