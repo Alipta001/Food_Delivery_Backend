@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
-
 load_dotenv()
 
 
@@ -25,6 +24,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,7 +58,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'foodDelivery.urls'
 
@@ -171,3 +175,19 @@ EMAIL_HOST_PASSWORD = 'pbdz qjqe syah temu'
 # EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Food Delivery Admin",
+    "site_header": "Food Delivery",
+    "welcome_sign": "Welcome to Food Delivery Admin",
+    "copyright": "Zingo Pvt Ltd",
+     "topmenu_links": [
+         {"app": "restaurants_api_app"},
+         {"app": "menuItems_api_app"},
+         {"app": "cart_api_app"},
+         {"app": "orders_api_app"},
+         {"app": "users_api_app"},
+         {"app": "contact"},
+     ],
+     "show_ui_builder": True,
+}

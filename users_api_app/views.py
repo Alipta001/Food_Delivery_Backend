@@ -5,15 +5,19 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User, LoginOTP
 from .serializers import RegisterSerializer, LoginSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
+
+#---------- Verify email with activation link ----------#
 
 # @api_view(["POST"])
+# @permission_classes([AllowAny])
 # def register_user(request):
 #     serializer = RegisterSerializer(data=request.data)
 
@@ -43,6 +47,7 @@ from .serializers import RegisterSerializer, LoginSerializer
 #     return Response(serializer.errors, status=400)
 
 # @api_view(["GET"])
+# @permission_classes([AllowAny])
 # def activate_user(request, uidb64, token):
 #     try:
 #         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -58,6 +63,7 @@ from .serializers import RegisterSerializer, LoginSerializer
 #     return Response({"error": "Invalid or expired token"}, status=400)
 
 # @api_view(["POST"])
+# @permission_classes([AllowAny])
 # def login_user(request):
 #     serializer = LoginSerializer(data=request.data)
 #     serializer.is_valid(raise_exception=True)
@@ -90,6 +96,7 @@ from .serializers import RegisterSerializer, LoginSerializer
 #     return Response({"message": "OTP sent to email"}, status=200)
 
 # @api_view(["POST"])
+# @permission_classes([AllowAny])
 # def verify_login_otp(request):
 #     email = request.data.get("email")
 #     otp = request.data.get("otp")
@@ -132,10 +139,14 @@ from .serializers import RegisterSerializer, LoginSerializer
 #         }
 #     }, status=200)
 
+
+
+#---------- Verify with OTP implementation ----------#
 def generate_otp():
     return str(random.randint(100000, 999999))
 
 @api_view(["POST"])
+@permission_classes([AllowAny]) 
 def register_user(request):
     serializer = RegisterSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -159,6 +170,7 @@ def register_user(request):
     )
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def verify_registration_otp(request):
     email = request.data.get("email")
     otp = request.data.get("otp")
@@ -192,6 +204,7 @@ def verify_registration_otp(request):
     return Response({"message": "Account verified successfully"}, status=200)
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def login_user(request):
     serializer = LoginSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -221,6 +234,7 @@ def login_user(request):
     return Response({"message": "OTP sent to email"}, status=200)
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def verify_login_otp(request):
     email = request.data.get("email")
     otp = request.data.get("otp")
@@ -251,6 +265,7 @@ def verify_login_otp(request):
     refresh = RefreshToken.for_user(user)
 
     return Response({
+        "message": "Login successful",
         "access": str(refresh.access_token),
         "refresh": str(refresh),
         "user": {

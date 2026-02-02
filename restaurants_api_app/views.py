@@ -62,7 +62,7 @@ def display_api(request):
     serializer = RestaurantSerializer(restaurants, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-# @api_view(['PATCH'])
+@api_view(['PATCH'])
 # @permission_classes([IsAuthenticated])
 def update_patch_api(request, pk):
     try:
@@ -85,7 +85,7 @@ def update_patch_api(request, pk):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# @api_view(['PUT'])
+@api_view(['PUT'])
 # @permission_classes([IsAuthenticated])
 def update_put_api(request):
     pk = request.data.get("id")

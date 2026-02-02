@@ -6,14 +6,12 @@ from datetime import timedelta
 
 
 class User(AbstractUser):
-    ADMIN = 'admin'
+    
     CUSTOMER = 'customer'
-    DELIVERY_PERSON = 'delivery_person'
+
 
     ROLE_CHOICES = [
-        (ADMIN, 'Admin'),
-        (CUSTOMER, 'Customer'),
-        (DELIVERY_PERSON, 'Delivery Person'),
+        (CUSTOMER, 'Customer')
     ]
 
     username = models.CharField(

@@ -8,3 +8,4 @@ if not admin.site.is_registered(UserToken):
     admin.site.register(UserToken)
     
 
+ 
