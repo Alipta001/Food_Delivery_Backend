@@ -177,17 +177,9 @@ EMAIL_HOST_PASSWORD = 'pbdz qjqe syah temu'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 JAZZMIN_SETTINGS = {
-    "site_title": "Food Delivery Admin",
+    "site_title": "Zingo Admin",
     "site_header": "Food Delivery",
-    "welcome_sign": "Welcome to Food Delivery Admin",
-    "copyright": "Zingo Pvt Ltd",
-     "topmenu_links": [
-         {"app": "restaurants_api_app"},
-         {"app": "menuItems_api_app"},
-         {"app": "cart_api_app"},
-         {"app": "orders_api_app"},
-         {"app": "users_api_app"},
-         {"app": "contact"},
-     ],
-     "show_ui_builder": True,
+    "welcome_sign": "Welcome to Zingo Admin Dashboard",
+    "search_model": "auth.User",
+    "changeform_format": "tabs",
 }

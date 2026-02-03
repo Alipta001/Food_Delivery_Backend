@@ -10,12 +10,74 @@ from menuItems_api_app.models import MenuItem
 
 # Create your views here.
 
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def add_to_cart(request):
+#     user = request.user
+#     menu_item_id = request.data.get('menu_item_id')
+#     quantity = request.data.get('quantity', 1)
+
+#     if not menu_item_id:
+#         return Response(
+#             {"error": "menu_item_id is required"},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     try:
+#         quantity = int(quantity)
+#         if quantity <= 0:
+#             raise ValueError
+#     except ValueError:
+#         return Response(
+#             {"error": "quantity must be a positive integer"},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     try:
+#         menu_item = MenuItem.objects.get(id=menu_item_id)
+#     except MenuItem.DoesNotExist:
+#         return Response(
+#             {"error": "Menu item not found"},
+#             status=status.HTTP_404_NOT_FOUND
+#         )
+
+#     cart, _ = Cart.objects.get_or_create(user=user)
+
+#     cart_item, created = CartItem.objects.get_or_create(
+#         cart=cart,
+#         menu_item=menu_item
+#     )
+
+#     cart_item.quantity = quantity if created else cart_item.quantity + quantity
+#     cart_item.save()
+
+#     return Response(
+#         {"message": "Item added to cart successfully"},
+#         status=status.HTTP_200_OK
+#     )
+
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def view_cart(request):
+#     user = request.user
+
+#     try:
+#         cart = Cart.objects.get(user=user)
+#     except Cart.DoesNotExist:
+#         return Response(
+#             {"error": "Cart not found"},
+#             status=status.HTTP_404_NOT_FOUND
+#         )
+
+#     serializer = CartSerializer(cart)
+#     return Response(serializer.data, status=status.HTTP_200_OK)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_to_cart(request):
     user = request.user
-    menu_item_id = request.data.get('menu_item_id')
-    quantity = request.data.get('quantity', 1)
+    menu_item_id = request.data.get("menu_item_id")
+    quantity = request.data.get("quantity", 1)
 
     if not menu_item_id:
         return Response(
@@ -34,10 +96,10 @@ def add_to_cart(request):
         )
 
     try:
-        menu_item = MenuItem.objects.get(id=menu_item_id)
+        menu_item = MenuItem.objects.get(id=menu_item_id, available=True)
     except MenuItem.DoesNotExist:
         return Response(
-            {"error": "Menu item not found"},
+            {"error": "Menu item not found or unavailable"},
             status=status.HTTP_404_NOT_FOUND
         )
 
@@ -45,10 +107,15 @@ def add_to_cart(request):
 
     cart_item, created = CartItem.objects.get_or_create(
         cart=cart,
-        menu_item=menu_item
+        menu_item=menu_item,
+        defaults={"price": menu_item.price}
     )
 
-    cart_item.quantity = quantity if created else cart_item.quantity + quantity
+    if not created:
+        cart_item.quantity += quantity
+    else:
+        cart_item.quantity = quantity
+
     cart_item.save()
 
     return Response(
@@ -59,16 +126,7 @@ def add_to_cart(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def view_cart(request):
-    user = request.user
-
-    try:
-        cart = Cart.objects.get(user=user)
-    except Cart.DoesNotExist:
-        return Response(
-            {"error": "Cart not found"},
-            status=status.HTTP_404_NOT_FOUND
-        )
-
+    cart, _ = Cart.objects.get_or_create(user=request.user)
     serializer = CartSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
