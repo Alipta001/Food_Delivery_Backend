@@ -26,7 +26,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.email
+        return self.username
 
 
 class UserToken(models.Model):

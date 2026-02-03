@@ -50,7 +50,7 @@ def create_menuItem(request: Request) -> Response:
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def list_menuItems(request: Request) -> Response:
 
     items = MenuItem.objects.select_related(
@@ -147,7 +147,7 @@ def delete_menuItem(request: Request) -> Response:
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def retrieve_menuItem(request: Request, pk: int) -> Response:
 
     item = get_object_or_404(
@@ -160,7 +160,7 @@ def retrieve_menuItem(request: Request, pk: int) -> Response:
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def list_menuItems_by_restaurant(request: Request, restaurant_id: int) -> Response:
 
     restaurant = get_object_or_404(Restaurants, pk=restaurant_id)
@@ -173,7 +173,7 @@ def list_menuItems_by_restaurant(request: Request, restaurant_id: int) -> Respon
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def search_menuItems(request: Request) -> Response:
 
     query = request.query_params.get("q", "").strip()

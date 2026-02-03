@@ -58,11 +58,22 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# ================= CORS CONFIGURATION =================
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
-
 CORS_ALLOW_CREDENTIALS = True
+
+# Critical for fixing 401 Unauthorized during Axios requests
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 
 ROOT_URLCONF = 'foodDelivery.urls'
 
@@ -177,9 +188,46 @@ EMAIL_HOST_PASSWORD = 'hfhg jsgm tejv jgme'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 JAZZMIN_SETTINGS = {
-    "site_title": "Zingo Admin",
-    "site_header": "Food Delivery",
-    "welcome_sign": "Welcome to Zingo Admin Dashboard",
+    "site_title": "Zingo||Admin ",
+    "site_header": "Zingo Admin",
+    "site_brand": "Zingo/Admin",              # ⭐ THIS is the key one
+    "site_logo": None,                  # No logo image
+    "site_logo_classes": "img-circle",
+    "welcome_sign": "Welcome to Admin Dashboard",
+
     "search_model": "auth.User",
     "changeform_format": "tabs",
+    "show_ui_builder": True,
 }
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": True,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-white",
+    "accent": "accent-danger",
+    "navbar": "navbar-danger navbar-dark",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-light-danger",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "flatly",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-danger",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-outline-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
+
