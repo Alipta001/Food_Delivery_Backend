@@ -5,8 +5,8 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ================= SECURITY =================
 SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-secret-for-dev")
-
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
@@ -15,6 +15,7 @@ ALLOWED_HOSTS = [
     ".onrender.com",
 ]
 
+# ================= APPLICATIONS =================
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     "contact_temp",
 ]
 
+# ================= MIDDLEWARE =================
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -51,26 +53,48 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# ================= CORS =================
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://zingo-one.vercel.app",
 ]
-
 CORS_ALLOW_CREDENTIALS = True
 
+# ================= URL / WSGI =================
 ROOT_URLCONF = "foodDelivery.urls"
 WSGI_APPLICATION = "foodDelivery.wsgi.application"
 
+# ================= TEMPLATES =================
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "templates")],  # create this folder if needed
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+# ================= DATABASE =================
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
+        default=os.environ.get(
+            "DATABASE_URL",
+            "postgresql://food_delivery_db_1vom_user:lf50ZWIoKjVMYAhgonvLXmqBJOIqk7mV@dpg-d6719ng6fj8s73817sf0-a/food_delivery_db_1vom"
+        ),
         conn_max_age=600,
         ssl_require=True,
     )
 }
 
+# ================= AUTH =================
 AUTH_USER_MODEL = "users_api_app.User"
-
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -78,11 +102,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# ================= INTERNATIONALIZATION =================
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# ================= STATIC / MEDIA =================
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
@@ -91,6 +117,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# ================= REST FRAMEWORK =================
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -103,15 +130,16 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+# ================= EMAIL =================
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "your-email@gmail.com")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "your-email-password")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# For Render SSL
+# ================= SECURITY FOR RENDER =================
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
