@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
 
+    # Your apps
     "restaurants_temp_app",
     "restaurants_api_app",
     "menuItems_api_app",
@@ -68,7 +69,7 @@ WSGI_APPLICATION = "foodDelivery.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],  # create this folder if needed
+        "DIRS": [os.path.join(BASE_DIR, "templates")],  # optional
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
