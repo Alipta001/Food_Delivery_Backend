@@ -5,19 +5,15 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ================= SECURITY =================
+SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-secret-for-dev")
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "your-default-secret-key")
-
-DEBUG = False
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     ".onrender.com",
 ]
-
-# ================= APPLICATIONS =================
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -27,11 +23,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Third-party
     "rest_framework",
     "corsheaders",
 
-    # Your apps
     "restaurants_temp_app",
     "restaurants_api_app",
     "menuItems_api_app",
@@ -57,8 +51,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# ================= CORS =================
-
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://zingo-one.vercel.app",
@@ -66,22 +58,16 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# ================= URL / WSGI =================
-
 ROOT_URLCONF = "foodDelivery.urls"
 WSGI_APPLICATION = "foodDelivery.wsgi.application"
-
-# ================= DATABASE =================
 
 DATABASES = {
     "default": dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=True,  # required for Render PostgreSQL
+        ssl_require=True,
     )
 }
-
-# ================= AUTH =================
 
 AUTH_USER_MODEL = "users_api_app.User"
 
@@ -92,14 +78,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ================= INTERNATIONALIZATION =================
-
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
-
-# ================= STATIC FILES =================
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
@@ -108,8 +90,6 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# ================= REST FRAMEWORK =================
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -123,23 +103,16 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-# ================= EMAIL =================
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# ================= SECURITY FOR RENDER =================
-
+# For Render SSL
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
-# ⚠️ For free Render plan, disable redirect to avoid issues
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
